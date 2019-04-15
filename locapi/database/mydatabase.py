@@ -1,5 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy import Table, Column, Integer, String, MetaData, Float, ForeignKey
+from math import sqrt, radians, cos, acos, sin, pow, ceil
 
 # Global Variables
 SQLITE          = 'sqlite'
@@ -150,4 +151,26 @@ class MyDatabase:
             except Exception as e:
                 print(e)
                 
-
+    def range_loc(self, user_lati, user_long, user_loc_id, range_l):           
+        raw_con = self.db_engine.raw_connection()
+        raw_con.create_function("cos", 1, cos)
+        raw_con.create_function("acos", 1, acos)
+        raw_con.create_function("sin", 1, sin)
+        raw_con.create_function("radians", 1, radians)
+        raw_con.create_function("sqrt", 1, sqrt)
+        raw_con.create_function("pow", 2, pow)
+        raw_con.create_function("ceil",1,ceil)
+        
+        try:
+            cursor = raw_con.cursor()
+            cursor.execute('SELECT name, longitude, latitude,CEIL(SQRT( '
+                'POW(69.1 * (latitude - {}), 2) + '
+               'POW(69.1 * ({} - longitude) * COS(latitude / 57.3), 2))) AS distance '
+                'FROM LOCATIONS WHERE distance < {} AND id != {} ORDER BY distance;'.format(user_lati, user_long, range_l, user_loc_id))
+            results = cursor.fetchall()
+            nearest = results[0]
+            print("All found locations /name,longitude,latitude,distance/ in specified range:" , results)
+            cursor.close()
+        finally:
+            raw_con.close()
+        return nearest

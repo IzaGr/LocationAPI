@@ -1,4 +1,4 @@
-from database.mydatabase import MyDatabase, LOCATION, USERS
+from database.mydatabase import MyDatabase
 from funcmodule import elevation
 
 
@@ -15,18 +15,36 @@ class User(MyDatabase):
         self.last_name = input('Your last name: ')
         return None
              
-    def assign_new_loc(self):  
-        long = input('Your position longitude: ')
-        long = float(long)
-        lati = input('Your position latitude: ') 
-        lati = float(lati)
-        loc_name = input('Your position name: ')
+    def assign_new_loc(self):         
+        condition = False
+        while condition == False:
+            long = input('Insert your location. Your location longitude: ')
+            try:
+                long = float(long)
+                if long in range(-180,180): 
+                    condition = True
+                else: print("Longitude must be number in range (-180,180)")
+            except:
+                print("Longitude must be number in range (-180,180)")
+        condition = False        
+        while condition == False:
+            lati = input('Insert your location latitude: ')
+            try:
+                lati = float(lati)
+                if lati in range(-90,90): 
+                    condition = True
+                else: print("Latitude must be number in range (-90,90)")
+            except:
+                print("Latitude must be number in range (-90,90)")
+        
+        loc_name = input('Your location name: ')
         elev = elevation(long, lati)
         s = MyDatabase()
         s.save_location(loc_name,long,lati,elev)
         self.id_loc = s.last_id()
-        #print(id_loc)
+        
         return self.id_loc
+
         
     def loc_choose(self):       
         condition = False
@@ -42,8 +60,13 @@ class User(MyDatabase):
                 self.assign_new_loc()
                 condition = True
             else: 
-                print ('Wrong selection! Type letter N or E:')      
-
+                print ('Wrong selection! Type letter N or E:') 
+                
+                
+    def loc_assign(self):
+         s = MyDatabase()
+         self.location=s.loc_params(self.id_loc)
+         return self.location
           
 class Location(MyDatabase):
     

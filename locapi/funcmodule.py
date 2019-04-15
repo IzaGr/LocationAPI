@@ -16,13 +16,5 @@ def elevation(long, lati):
     return elev_result                 
 
  
-def nearest_location():
-    pass
-
-
-def locations_in_range():
-    pass
-
-    
     
     
