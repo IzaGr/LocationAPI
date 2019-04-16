@@ -27,17 +27,16 @@ def user_menu():
     dbms.add_user_to_db(new_user.first_name, new_user.last_name, new_user.id_loc)
     condition = False
     while condition == False:
-        s = input("Please choose 1 or 2: \n 1. Find all locations in range \n 2. Find nearest location \n Your choice: ")
+        s = input("Please choose 1 or 2: \n 1. Find nearest location  \n 2. Find all locations in range  \n Your choice: ")
         if s == "1":
+            range_l = 12450 #the largest distance possible in miles
+            dbms.range_loc(new_user.location[0], new_user.location[1], new_user.id_loc, range_l)
+            condition = True
+        elif s == "2":        
             range_l = input("Please specify the range in miles: ")
             range_l = int(range_l)
             dbms.range_loc(new_user.location[0], new_user.location[1], new_user.id_loc, range_l)
             condition = True
-        elif s == "2":
-            range_l = 12450 #the largest distance possible in miles
-            nearest = dbms.range_loc(new_user.location[0], new_user.location[1], new_user.id_loc, range_l)
-            print("The nearest location /name,longitude,latitude,distance/ found: \n", nearest)
-            condition = True       
     return new_user
 
 # =============================================================================

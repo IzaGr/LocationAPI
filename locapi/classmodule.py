@@ -1,6 +1,9 @@
 from database.mydatabase import MyDatabase
 from funcmodule import elevation
 
+# =============================================================================
+# User creation with user data and user location
+# =============================================================================
 
 class User(MyDatabase):
            
@@ -15,13 +18,14 @@ class User(MyDatabase):
         self.last_name = input('Your last name: ')
         return None
              
-    def assign_new_loc(self):         
+    def assign_new_loc(self):  
+        #  Assigning new location to the user
         condition = False
         while condition == False:
             long = input('Insert your location. Your location longitude: ')
             try:
                 long = float(long)
-                if long in range(-180,180): 
+                if -180.0 <= long <= 180.0: 
                     condition = True
                 else: print("Longitude must be number in range (-180,180)")
             except:
@@ -31,7 +35,7 @@ class User(MyDatabase):
             lati = input('Insert your location latitude: ')
             try:
                 lati = float(lati)
-                if lati in range(-90,90): 
+                if -180.0 <= lati <= 180.0:  
                     condition = True
                 else: print("Latitude must be number in range (-90,90)")
             except:
@@ -44,9 +48,9 @@ class User(MyDatabase):
         self.id_loc = s.last_id()
         
         return self.id_loc
-
-        
-    def loc_choose(self):       
+    
+    def loc_choose(self): 
+        # Choosing existing location from database and assigning to the user
         condition = False
         while condition == False:
             choice = input('Add your location. New or Existing location (N/E): ')
@@ -67,6 +71,10 @@ class User(MyDatabase):
          s = MyDatabase()
          self.location=s.loc_params(self.id_loc)
          return self.location
+
+# =============================================================================
+# New location creation and saving on database
+# =============================================================================
           
 class Location(MyDatabase):
     
@@ -82,7 +90,7 @@ class Location(MyDatabase):
             long = input('Insert new location. The location longitude: ')
             try:
                 self.longitude = float(long)
-                if self.longitude in range(-180,180): 
+                if -180.0 <= self.longitude <= 180.0: 
                     condition = True
                 else: print("Longitude must be number in range (-180,180)")
             except:
@@ -95,7 +103,7 @@ class Location(MyDatabase):
             lati = input('Insert new location latitude: ')
             try:
                 self.latitude = float(lati)
-                if self.latitude in range(-90,90): 
+                if -90.0 <= self.latitude <= 90.0 : 
                     condition = True
                 else: print("Latitude must be number in range (-90,90)")
             except:

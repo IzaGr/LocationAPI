@@ -1,10 +1,12 @@
 import urllib.request
 import json
 
+
 api = 'https://elevation-api.io/api/elevation?points='
 
                
 def elevation(long, lati):
+    # Elevation calcultation using external API elevation-api.io
     try:
         elev_request = '({},{})'.format(long,lati)
         request = api + elev_request

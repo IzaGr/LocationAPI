@@ -60,9 +60,10 @@ class MyDatabase:
                 connection.execute(query)
             except Exception as e:
                 print(e)
- 
+
 
     def show_locs(self, query=''):
+        #show all locations from database to the user
         query = query if query != '' else "SELECT * FROM '{}';".format(LOCATION)
         
         with self.db_engine.connect() as connection:
@@ -78,7 +79,8 @@ class MyDatabase:
 
 
 
-    def assign_exist_loc(self):            
+    def assign_exist_loc(self): 
+        #assigning existing location id to the user        
         query = "SELECT id FROM '{}';".format(LOCATION)
         id_list=[]
         with self.db_engine.connect() as connection:
@@ -105,6 +107,7 @@ class MyDatabase:
         
         
     def loc_params(self,id_loc):
+        #retrieving location parameters based on location id
         query = "SELECT longitude, latitude, elevation from {} WHERE id={id};".format(LOCATION, id=id_loc)
         loc=[]
         with self.db_engine.connect() as connection:
@@ -119,6 +122,7 @@ class MyDatabase:
                 print(e)
     
     def save_location(self, loc_name,long,lati,elev):
+        #saving location to database
         query = "INSERT INTO LOCATIONS (name, longitude, latitude, elevation) "\
                 "VALUES ('{}',{},{},{});".format(loc_name,long,lati,elev)
         self.execute_query(query)
@@ -127,7 +131,8 @@ class MyDatabase:
     
         
         
-    def last_id(self):  
+    def last_id(self): 
+        #finding last created location id
         query = "SELECT id FROM LOCATIONS ORDER BY id DESC LIMIT 1;"       
         last_id=[]
         with self.db_engine.connect() as connection:
@@ -143,6 +148,7 @@ class MyDatabase:
     
     
     def add_user_to_db(self, first_n, last_n, id_loc): 
+        #adding user data to database
         query = "INSERT INTO USERS (first_name, last_name, location_id) VALUES ('{}','{}',{});".format(first_n, last_n, id_loc)
         with self.db_engine.connect() as connection:
             try:
@@ -151,7 +157,8 @@ class MyDatabase:
             except Exception as e:
                 print(e)
                 
-    def range_loc(self, user_lati, user_long, user_loc_id, range_l):           
+    def range_loc(self, user_lati, user_long, user_loc_id, range_l):  
+        #finding locations in range and the nearest location         
         raw_con = self.db_engine.raw_connection()
         raw_con.create_function("cos", 1, cos)
         raw_con.create_function("acos", 1, acos)
@@ -169,8 +176,12 @@ class MyDatabase:
                 'FROM LOCATIONS WHERE distance < {} AND id != {} ORDER BY distance;'.format(user_lati, user_long, range_l, user_loc_id))
             results = cursor.fetchall()
             nearest = results[0]
-            print("All found locations /name,longitude,latitude,distance/ in specified range:" , results)
+            if range_l == 12450:
+                print("The nearest location /name,longitude,latitude,distance/ found: \n", nearest)
+            else:
+                print("All found locations /name,longitude,latitude,distance/ in specified range:" , results)                       
             cursor.close()
+        except IndexError : print("Lack of results. Try to specify larger range! " )
         finally:
             raw_con.close()
-        return nearest
+        
